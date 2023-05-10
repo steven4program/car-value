@@ -31,10 +31,19 @@ export class UsersService {
     }
     Object.assign(user, attrs);
     return this.repo.save(user);
+
+    // use update when you don't need the entity instance. It's more performant but without triggering hooks.
     // return this.repo.update(id, attrs);
   }
 
-  remove(id: number) {
-    return this.repo.delete(id);
+  async remove(id: number) {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new Error('user not found');
+    }
+    return this.repo.remove(user);
+
+    // use delete when you don't need the entity instance. It's more performant but without triggering hooks.
+    // return this.repo.delete(id);
   }
 }
