@@ -2,8 +2,7 @@ import { Test } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
-import { BadRequestException } from '@nestjs/common';
-// import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -31,10 +30,12 @@ describe('AuthService', () => {
     service = module.get(AuthService);
   });
 
+  // signup function test
   it('can create an instance of auth service', async () => {
     expect(service).toBeDefined();
   });
 
+  // signup encrypt password test
   it('creates a new user with a salted and hashed password', async () => {
     const user = await service.signup('5566@test.com', '123456');
     // expect the user's password is encrypted
@@ -45,6 +46,7 @@ describe('AuthService', () => {
     expect(hash).toBeDefined();
   });
 
+  // signup email in use test
   it('throws an error if user signs up with email that is in use', async () => {
     fakeUsersService.find = () =>
       Promise.resolve([{ id: 1, email: 'a', password: '1' }] as User[]);
@@ -52,10 +54,35 @@ describe('AuthService', () => {
       BadRequestException,
     );
   });
-});
 
-// it('throws if signin is called with an unused email', async () => {
-//   await expect(
-//     service.signin('asdflkj@asdlfkj.com', 'passdflkj'),
-//   ).rejects.toThrow(NotFoundException);
-// });
+  // signin function test
+  it('throws if signin is called with an unused email', async () => {
+    await expect(service.signin('5566@test.com', '123456')).rejects.toThrow(
+      NotFoundException,
+    );
+  });
+
+  // signin wrong password test
+  it('throws if an invalid password is provided', async () => {
+    fakeUsersService.find = () =>
+      Promise.resolve([{ email: '5566@test.com', password: '123456' } as User]);
+    await expect(service.signin('55688@test.com', 'password')).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
+  // signin correct password test
+  it('returns a user if correct password is provided', async () => {
+    // The brutal way:
+    fakeUsersService.find = () =>
+      Promise.resolve([
+        {
+          email: '5566@test.com',
+          password:
+            'ae1c0c6b20470e9b.5142cdbc7f249a904b96b1c54ab03ae57d902d5ad263b75008e38379c7cfafe6',
+        } as User,
+      ]);
+    const user = await service.signin('5566@test.com', '123456');
+    expect(user).toBeDefined();
+  });
+});
