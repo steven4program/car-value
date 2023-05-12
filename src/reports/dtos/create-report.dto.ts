@@ -3,7 +3,7 @@ import {
   IsString,
   Min,
   Max,
-  IsLatLong,
+  IsLongitude,
   IsLatitude,
 } from 'class-validator';
 
@@ -18,10 +18,10 @@ export class CreateReportDto {
   @Max(2050)
   year: number;
 
-  @IsLatitude()
+  @IsLongitude()
   lng: number;
 
-  @IsLatLong()
+  @IsLatitude()
   lat: number;
 
   @IsString()
