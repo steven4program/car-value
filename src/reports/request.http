@@ -2,19 +2,23 @@ POST http://localhost:3000/reports
 Content-Type: application/json
 
 {
-  "make": "Toyota",
-  "model": "Camry",
-  "year": 2018,
+  "make": "Ford",
+  "model": "Mustang",
+  "year": 1982,
   "mileage": 50000,
-  "lng": 0,
-  "lat": 0,
-  "price": 10000
+  "lng": 45,
+  "lat": 45,
+  "price": 20000
 }
 
 ### Approve an existing report
-PATCH http://localhost:3000/reports/5
+PATCH http://localhost:3000/reports/9
 Content-Type: application/json
 
 {
-  "approved": false
+  "approved": true
 }
+
+### Get an estimate for a car
+GET http://localhost:3000/reports?make=Ford&model=Mustang&year=1981&mileage=50000&lng=44&lat=44
+```
