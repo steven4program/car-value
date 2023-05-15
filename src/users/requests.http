@@ -7,7 +7,7 @@ Content-Type: application/json
     "password": "test2023"
 }
 
-### 
+### Sign in
 POST http://localhost:3000/auth/signin
 Content-Type: application/json
 
